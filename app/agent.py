@@ -14,6 +14,7 @@
 import argparse
 import inspect
 import json
+import os
 from pathlib import Path
 
 from pydantic_ai import Agent
@@ -22,8 +23,10 @@ from fastmcp import Client
 from pydantic_ai.mcp import MCPToolset, StdioTransport
 from pydantic_ai.messages import ToolCallPart, ToolReturnPart
 from pydantic_ai.models.google import GoogleModel
+from pydantic_ai.models.openai import OpenAIResponsesModel
 from pydantic_ai.models.test import TestModel
 from pydantic_ai.providers.google import GoogleProvider
+from pydantic_ai.providers.openai import OpenAIProvider
 
 from app import tools
 from app.config import MODEL, api_error_message, get_api_key
@@ -76,7 +79,18 @@ def build_mcp_agent(config_path: Path = MCP_CONFIG) -> Agent:
     return Agent(instructions=INSTRUCTIONS, toolsets=load_mcp_servers(config_path))
 
 
-def build_model() -> GoogleModel:
+def build_model() -> GoogleModel | OpenAIResponsesModel:
+    if MODEL.startswith("openai:"):
+        api_key = os.getenv("OPENAI_API_KEY")
+        if not api_key:
+            raise SystemExit(
+                "環境変数 OPENAI_API_KEY が見つかりません。"
+                "Codespaces secret に登録し、Codespace を再起動してください。"
+            )
+        return OpenAIResponsesModel(
+            MODEL.removeprefix("openai:"),
+            provider=OpenAIProvider(api_key=api_key),
+        )
     return GoogleModel(MODEL, provider=GoogleProvider(api_key=get_api_key()))
 
 

@@ -5,11 +5,14 @@ TestModel は実際のLLMを呼ばない偽モデルで、登録されたツー�
 「ツールが登録され、呼ばれ、結果がモデルに戻るか」を確かめられる。
 """
 
+import pytest
+
 from pydantic_ai import DeferredToolRequests
 from pydantic_ai.messages import ToolCallPart, ToolReturnPart
 from pydantic_ai.models.test import TestModel
 
 from app.agent import agent
+import app.agent as agent_module
 
 BASE_TOOLS = {"search_glossary", "get_lecture_summary"}
 
@@ -40,3 +43,22 @@ def test_glossary_result_reaches_the_model():
         result = agent.run_sync("RAGとは？")
     returns = _parts(result, ToolReturnPart)
     assert returns and returns[0].tool_name == "search_glossary"
+
+
+def test_openai_model_can_be_selected_without_gemini_key(monkeypatch):
+    monkeypatch.setattr(agent_module, "MODEL", "openai:gpt-6-luna")
+    monkeypatch.setenv("OPENAI_API_KEY", "sk-test-not-real")
+    monkeypatch.delenv("GEMINI_API_KEY", raising=False)
+
+    model = agent_module.build_model()
+
+    assert type(model).__name__ == "OpenAIResponsesModel"
+    assert model.model_name == "gpt-6-luna"
+
+
+def test_openai_model_explains_missing_key(monkeypatch):
+    monkeypatch.setattr(agent_module, "MODEL", "openai:gpt-6-luna")
+    monkeypatch.delenv("OPENAI_API_KEY", raising=False)
+
+    with pytest.raises(SystemExit, match="OPENAI_API_KEY"):
+        agent_module.build_model()
