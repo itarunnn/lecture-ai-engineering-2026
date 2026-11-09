@@ -45,6 +45,15 @@ def test_glossary_result_reaches_the_model():
     assert returns and returns[0].tool_name == "search_glossary"
 
 
+def test_make_quiz_is_offered_to_model():
+    model = TestModel(call_tools=[])
+    with agent.override(model=model):
+        agent.run_sync("第2回の確認問題を出して")
+
+    offered = {tool.name for tool in model.last_model_request_parameters.function_tools}
+    assert "make_quiz" in offered
+
+
 def test_openai_model_can_be_selected_without_gemini_key(monkeypatch):
     monkeypatch.setattr(agent_module, "MODEL", "openai:gpt-6-luna")
     monkeypatch.setenv("OPENAI_API_KEY", "sk-test-not-real")
