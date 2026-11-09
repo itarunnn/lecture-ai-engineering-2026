@@ -93,3 +93,24 @@ AIE_MODEL=gemini-3.5-flash uv run python -m app.ask "LoRAとは何ですか？"
 ```
 
 無料枠には1分あたり・1日あたりのリクエスト上限があります。上限は [Gemini API のレート制限のページ](https://ai.google.dev/gemini-api/docs/rate-limits) で確認してください。
+
+### 第3回を OpenAI API で動かす場合
+
+第3回の `app.agent` は OpenAI API でも動かせます。Codespaces secret に `OPENAI_API_KEY` を登録して Codespace を再起動し、ターミナルで次を実行します。キーをリポジトリやチャットに貼らないでください。
+
+```bash
+export AIE_MODEL=openai:gpt-6-luna
+uv run python -m app.agent --trace "LoRAとQLoRAの違いは？"
+```
+
+`app.ask` などほかのコマンドは従来の Gemini 設定です。API キーなしでできる確認には `uv run python -m app.agent --list-tools` と `uv run pytest -q` を使えます。
+
+Windows の PowerShell から実行する場合は、API キーを[OpenAI API Platform](https://platform.openai.com/api-keys)で作り、次のように現在のターミナルだけへ設定します。入力したキーは画面に表示されません。
+
+```powershell
+uv sync --no-config --frozen --python 3.12
+$apiKey = Read-Host "OpenAI API key" -AsSecureString
+$env:OPENAI_API_KEY = [System.Net.NetworkCredential]::new("", $apiKey).Password
+$env:AIE_MODEL = "openai:gpt-6-luna"
+.\.venv\Scripts\python.exe -m app.agent --trace "LoRAとQLoRAの違いは？"
+```
