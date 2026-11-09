@@ -85,7 +85,7 @@ def build_model() -> GoogleModel | OpenAIResponsesModel:
         if not api_key:
             raise SystemExit(
                 "環境変数 OPENAI_API_KEY が見つかりません。"
-                "Codespaces secret に登録し、Codespace を再起動してください。"
+                "実行する環境に API キーを設定してください。"
             )
         return OpenAIResponsesModel(
             MODEL.removeprefix("openai:"),

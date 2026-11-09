@@ -104,3 +104,13 @@ uv run python -m app.agent --trace "LoRAとQLoRAの違いは？"
 ```
 
 `app.ask` などほかのコマンドは従来の Gemini 設定です。API キーなしでできる確認には `uv run python -m app.agent --list-tools` と `uv run pytest -q` を使えます。
+
+Windows の PowerShell から実行する場合は、API キーを[OpenAI API Platform](https://platform.openai.com/api-keys)で作り、次のように現在のターミナルだけへ設定します。入力したキーは画面に表示されません。
+
+```powershell
+uv sync --no-config --frozen --python 3.12
+$apiKey = Read-Host "OpenAI API key" -AsSecureString
+$env:OPENAI_API_KEY = [System.Net.NetworkCredential]::new("", $apiKey).Password
+$env:AIE_MODEL = "openai:gpt-6-luna"
+.\.venv\Scripts\python.exe -m app.agent --trace "LoRAとQLoRAの違いは？"
+```
