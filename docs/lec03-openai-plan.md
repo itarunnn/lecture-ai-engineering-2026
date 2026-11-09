@@ -18,5 +18,5 @@
 1. モデル選択とキー未設定時の案内を先にテスト化し、失敗を確認する（済）。
 2. 実装後に対象テストと全テストを Python 3.12 で実行した（全体20件が成功）。
 3. API キーを使わないツール一覧に `make_quiz` を含む3件が表示された。
-4. 実際の API 応答と `--trace` での `make_quiz(lecture=2)` 呼び出しはキー設定後に確認する。モデルが呼ばなければ `INSTRUCTIONS` を調整する。
-5. 解答と実行記録が揃ってから、本人の fork の `lec03` から `main` へ PR を作る。
+4. 2026-11-09、受講者が Windows PC から OpenAI `gpt-6-luna` で確認した。提示された `--trace` には `get_lecture_summary(2)`、`make_quiz(2)`、`search_glossary("事前学習")` がこの順にあり、`requests=4`、`tool_calls=3`。この実測を `lectures/03/answer.md` に記録した。
+5. 第1回の回答との比較と、宿題のレベル選択・実施が残る。解答が揃ってから、本人の fork の `lec03` から `main` へ PR を作る。
