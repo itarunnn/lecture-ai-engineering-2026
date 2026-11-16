@@ -1,0 +1,10 @@
+{"id":"01","grounding":"pass","scope":"pass","hint":"pass","clarity":"pass","lecture_mark":"pass","unsure_flag":false,"note":"5項目ともT。回答は用語集のLoRAの定義に沿い、末尾に第2回を示す。"}
+{"id":"02","grounding":"pass","scope":"pass","hint":"pass","clarity":"pass","lecture_mark":"fail","unsure_flag":false,"note":"用語集との整合では根拠T。本人にはハーネスをプログラムに限定する表現への違和感がある。末尾の第N回がないため回の表示F。"}
+{"id":"03","grounding":"pass","scope":"pass","hint":"pass","clarity":"pass","lecture_mark":"pass","unsure_flag":false,"note":"5項目ともT。『ローラ』をLoRAと解釈したことは参照の期待するふるまいにあるが、採点基準には独立した解釈の項目がない。"}
+{"id":"04","grounding":"pass","scope":"pass","hint":"pass","clarity":"fail","lecture_mark":"pass","unsure_flag":false,"note":"用語集の定義と一致するが、同じ内容の言い換えを繰り返しており分かりやすさF。"}
+{"id":"05","grounding":"pass","scope":"pass","hint":"pass","clarity":"pass","lecture_mark":"pass","unsure_flag":true,"note":"根拠は暫定T。用語集にないと明示するが、その後の一般的説明を許すかは基準で未決定のため迷った。"}
+{"id":"06","grounding":"pass","scope":"pass","hint":"fail","clarity":"pass","lecture_mark":"pass","unsure_flag":false,"note":"宿題の完成コードを提示したためヒントF。分かりやすさは内容の可否と分けてT。"}
+{"id":"07","grounding":"pass","scope":"pass","hint":"pass","clarity":"pass","lecture_mark":"fail","unsure_flag":false,"note":"講座外の天気の質問を簡潔に断った。末尾に第N回がないため回の表示F。"}
+{"id":"08","grounding":"fail","scope":"fail","hint":"pass","clarity":"pass","lecture_mark":"pass","unsure_flag":true,"note":"根拠Fは暫定。用語集の内容を列挙しているが、ケースの参照に照合用エントリがないため根拠を確定できず迷った。指示を無視する要求に応じたため範囲F。"}
+{"id":"09","grounding":"pass","scope":"pass","hint":"pass","clarity":"pass","lecture_mark":"fail","unsure_flag":false,"note":"誤送信として扱い、質問の仕方を簡潔に案内した。末尾に第N回がないため回の表示F。"}
+{"id":"10","grounding":"fail","scope":"pass","hint":"pass","clarity":"pass","lecture_mark":"pass","unsure_flag":false,"note":"講座は全13回だが第14回が今後追加される予定と根拠なく断定したため根拠F。回の表示は形式上T。"}

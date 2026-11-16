@@ -15,6 +15,7 @@ pass / fail / unsure のどれかを返させる（構造化出力）。unsure �
 
 import argparse
 import json
+import os
 import re
 import time
 import unicodedata
@@ -28,7 +29,9 @@ from pydantic_ai.exceptions import ModelHTTPError, UnexpectedModelBehavior
 from pydantic_ai.messages import ModelMessage, ModelResponse, ToolCallPart, UserPromptPart
 from pydantic_ai.models.function import AgentInfo, FunctionModel
 from pydantic_ai.models.google import GoogleModel
+from pydantic_ai.models.openai import OpenAIResponsesModel
 from pydantic_ai.providers.google import GoogleProvider
+from pydantic_ai.providers.openai import OpenAIProvider
 
 from app import tools
 from app.config import MODEL, api_error_message, get_api_key
@@ -120,11 +123,17 @@ def build_judge(model, rubric: str) -> Agent:
         "4 つの基準（grounding, scope, hint, clarity）それぞれについて、reason（理由）を先に書き、"
         "そのあとで verdict を pass / fail / unsure のどれかにしてください。"
     )
-    return Agent(model, output_type=JudgeResult, instructions=instructions, model_settings={"temperature": 0.0})
+    settings = {} if isinstance(model, OpenAIResponsesModel) else {"temperature": 0.0}
+    return Agent(model, output_type=JudgeResult, instructions=instructions, model_settings=settings)
 
 
-def build_llm_model(model_name: str) -> GoogleModel:
-    """Gemini のモデルを作る。API キーが無ければ手順を表示して終了する（app.agent と同じ）。"""
+def build_llm_model(model_name: str) -> GoogleModel | OpenAIResponsesModel:
+    """モデル名に応じて OpenAI または Gemini の採点モデルを作る。"""
+    if model_name.startswith("openai:"):
+        api_key = os.getenv("OPENAI_API_KEY")
+        if not api_key:
+            raise SystemExit("環境変数 OPENAI_API_KEY が見つかりません。実行環境に API キーを設定してください。")
+        return OpenAIResponsesModel(model_name.removeprefix("openai:"), provider=OpenAIProvider(api_key=api_key))
     return GoogleModel(model_name, provider=GoogleProvider(api_key=get_api_key()))
 
 

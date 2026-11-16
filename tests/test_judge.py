@@ -4,6 +4,9 @@
 「採点 → 人のラベルとの比較 → 要確認・不一致の集計」が通ることを確かめる。
 """
 
+import pytest
+from pydantic_ai.models.openai import OpenAIResponsesModel
+
 from app import judge
 from app.judge import (
     ALL_CRITERIA,
@@ -68,3 +71,20 @@ def test_judge_pipeline_with_fake_model():
     assert summary["coverage"]["covered"] + len({r["id"] for r in summary["review"]}) == 10
     for m in summary["mismatches"]:
         assert m["kind"] in ("見逃し", "過検出")
+
+
+def test_openai_judge_model_uses_openai_key(monkeypatch):
+    monkeypatch.setenv("OPENAI_API_KEY", "test-key")
+    monkeypatch.delenv("GEMINI_API_KEY", raising=False)
+
+    model = judge.build_llm_model("openai:gpt-6-luna")
+
+    assert isinstance(model, OpenAIResponsesModel)
+    assert model.model_name == "gpt-6-luna"
+
+
+def test_openai_judge_model_requires_openai_key(monkeypatch):
+    monkeypatch.delenv("OPENAI_API_KEY", raising=False)
+
+    with pytest.raises(SystemExit, match="OPENAI_API_KEY"):
+        judge.build_llm_model("openai:gpt-6-luna")
