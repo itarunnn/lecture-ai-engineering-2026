@@ -88,3 +88,7 @@ def test_openai_judge_model_requires_openai_key(monkeypatch):
 
     with pytest.raises(SystemExit, match="OPENAI_API_KEY"):
         judge.build_llm_model("openai:gpt-6-luna")
+
+
+def test_homework_verdict_precedes_reason_in_output_schema():
+    assert list(judge.CriterionVerdict.model_json_schema()["properties"]) == ["verdict", "reason"]
